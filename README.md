@@ -16,3 +16,9 @@ There is a separate tests that we can run or modify.
 To run the tests, in terminal, run:
 
 "go test -v"
+
+The following commands will help us retrieve cpu usage and memory allocation:
+
+ go run main.go housesInput.csv output.jl
+ go tool pprof cpu.prof
+ go tool pprof memory.prof
