@@ -100,6 +100,8 @@ func writeJSONLines(file *os.File, headers []string, records [][]string) error {
 		// }
 		// jsonLine, err := json.Marshal(data)
 
+		// https://medium.com/kanoteknologi/better-way-to-read-and-write-json-file-in-golang-9d575b7254f2
+
 		var jsonLine strings.Builder
 
 		jsonLine.WriteString("{")
@@ -121,6 +123,10 @@ func writeJSONLines(file *os.File, headers []string, records [][]string) error {
 	}
 	return nil
 }
+
+// profiling references:
+// https://granulate.io/blog/golang-profiling-basics-quick-tutorial/
+// https://hackernoon.com/go-the-complete-guide-to-profiling-your-code-h51r3waz
 
 func startProfiling() {
 	go func() {
