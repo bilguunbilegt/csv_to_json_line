@@ -10,3 +10,9 @@ Now, copy your csv file to a same directory as your executable. Then run:
 "./csvtojl inputFile.csv outputFile.jl"
 
 This will create a new JSON Line file based on your CSV file.
+
+There is a separate tests that we can run or modify.
+
+To run the tests, in terminal, run:
+
+"go test -v"
