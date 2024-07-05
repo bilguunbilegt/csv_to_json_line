@@ -3,13 +3,20 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
+	"log"
+	"net/http"
 	"os"
+	"runtime"
+	"runtime/pprof"
 	"strings"
 
 	"github.com/spf13/cobra"
 )
 
 func main() {
+	startProfiling()
+	defer stopProfiling()
+
 	var rootCmd = &cobra.Command{
 		Use:   "csvtojl <input CSV file> <output JSONL file>",
 		Short: "Convert CSV to JSON Lines",
@@ -113,4 +120,33 @@ func writeJSONLines(file *os.File, headers []string, records [][]string) error {
 		}
 	}
 	return nil
+}
+
+func startProfiling() {
+	go func() {
+		log.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
+
+	cpuProfile, err := os.Create("cpu.prof")
+	if err != nil {
+		log.Fatalf("could not create CPU profile: %v", err)
+	}
+	pprof.StartCPUProfile(cpuProfile)
+	log.Println("CPU profiling started")
+}
+
+func stopProfiling() {
+	pprof.StopCPUProfile()
+	log.Println("CPU profiling stopped")
+
+	memProfile, err := os.Create("mem.prof")
+	if err != nil {
+		log.Fatalf("could not create memory profile: %v", err)
+	}
+	defer memProfile.Close()
+	runtime.GC() // get up-to-date statistics
+	if err := pprof.WriteHeapProfile(memProfile); err != nil {
+		log.Fatalf("could not write memory profile: %v", err)
+	}
+	log.Println("Memory profiling completed")
 }

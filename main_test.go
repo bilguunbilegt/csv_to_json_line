@@ -29,7 +29,7 @@ func createTempCSVFile(t *testing.T, content [][]string) *os.File {
 }
 
 func TestOpenFile(t *testing.T) {
-	tempFile := createTempCSVFile(t, [][]string{{"name", "age", "city"}, {"Bilguun B", "36", "Chicago"}, {"Kevin B", "5", "Chicago"}})
+	tempFile := createTempCSVFile(t, [][]string{{"name", "age", "city", "state"}, {"Bilguun B", "36", "Chicago", "IL"}, {"Kevin B", "5", "Chicago", "IL"}})
 	defer os.Remove(tempFile.Name())
 
 	_, err := openFile(tempFile.Name())
@@ -52,7 +52,7 @@ func TestCreateFile(t *testing.T) {
 }
 
 func TestReadCSV(t *testing.T) {
-	tempFile := createTempCSVFile(t, [][]string{{"name", "age", "city"}, {"Bilguun B", "36", "Chicago"}, {"Kevin B", "5", "Chicago"}})
+	tempFile := createTempCSVFile(t, [][]string{{"name", "age", "city", "state"}, {"Bilguun B", "36", "Chicago", "IL"}, {"Kevin B", "5", "Chicago", "IL"}})
 	defer os.Remove(tempFile.Name())
 
 	file, err := openFile(tempFile.Name())
@@ -72,9 +72,9 @@ func TestReadCSV(t *testing.T) {
 
 func TestWriteJSONLines(t *testing.T) {
 	tempCSVContent := [][]string{
-		{"name", "age", "city"},
-		{"Bilguun B", "36", "Chicago"},
-		{"Kevin B", "5", "Chicago"},
+		{"name", "age", "city", "state"},
+		{"Bilguun B", "36", "Chicago", "IL"},
+		{"Kevin B", "5", "Chicago", "IL"},
 	}
 	headers := tempCSVContent[0]
 	records := tempCSVContent[1:]
@@ -93,9 +93,9 @@ func TestWriteJSONLines(t *testing.T) {
 
 func TestConvertCSVToJSONLines(t *testing.T) {
 	tempCSV := createTempCSVFile(t, [][]string{
-		{"name", "age", "city"},
-		{"Bilguun B", "36", "Chicago"},
-		{"Kevin B", "5", "Chicago"},
+		{"name", "age", "city", "state"},
+		{"Bilguun B", "36", "Chicago", "IL"},
+		{"Kevin B", "5", "Chicago", "IL"},
 	})
 	defer os.Remove(tempCSV.Name())
 
@@ -128,18 +128,18 @@ func TestConvertCSVToJSONLines(t *testing.T) {
 		got = append(got, obj)
 	}
 
-	want := []map[string]string{
-		{"name": "Bilguun B", "age": "36", "city": "Chicago"},
-		{"name": "Kevin B", "age": "5", "city": "Chicago"},
+	expect := []map[string]string{
+		{"name": "Bilguun B", "age": "36", "city": "Chicago", "state": "IL"},
+		{"name": "Kevin B", "age": "5", "city": "Chicago", "state": "IL"},
 	}
 
-	if len(got) != len(want) {
-		t.Fatalf("unexpected number of records: got %d, want %d", len(got), len(want))
+	if len(got) != len(expect) {
+		t.Fatalf("unexpected number of records: got %d, want %d", len(got), len(expect))
 	}
 
 	for i := range got {
-		if !equal(got[i], want[i]) {
-			t.Fatalf("unexpected output at record %d: got %v, want %v", i, got[i], want[i])
+		if !equal(got[i], expect[i]) {
+			t.Fatalf("unexpected output at record %d: got %v, want %v", i, got[i], expect[i])
 		}
 	}
 }
